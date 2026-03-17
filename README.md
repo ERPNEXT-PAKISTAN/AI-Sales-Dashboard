@@ -306,6 +306,26 @@ Pre-commit tools:
 - prettier
 - pyupgrade
 
+## Screenshots
+
+![AI Sales Dashboard 1](docs/images/AI%20Bot01.png)
+
+![AI Sales Dashboard 2](docs/images/AI%20Bot02.png)
+
+![AI Sales Dashboard 3](docs/images/AI%20Bot03.png)
+
+![AI Sales Dashboard 4](docs/images/AI%20Bot04.png)
+
+![AI Sales Dashboard 5](docs/images/AI%20Bot05.png)
+
+![AI Sales Dashboard 6](docs/images/AI%20Bot06.png)
+
+![AI Sales Dashboard 7](docs/images/AI%20Bot07.png)
+
+![AI Sales Dashboard 8](docs/images/AI%20Bot08.png)
+
+![AI Sales Dashboard 9](docs/images/AI%20Bot09.png)
+
 ## License
 
 MIT
