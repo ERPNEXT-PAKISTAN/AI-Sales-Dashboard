@@ -4,6 +4,36 @@ AI Sales Dashboard is a Frappe/ERPNext app for sales intelligence, KPI analytics
 
 This repository contains the complete app code (DocTypes, Pages, Reports, APIs, assets, and settings UI).
 
+## Repository Contents
+
+This GitHub repository includes the complete app package required for installation on another server.
+
+- App source code
+- API endpoints
+- DocTypes
+- Pages
+- Reports
+- Dashboard charts
+- Number cards
+- Workspace assets
+- Public JavaScript assets
+- Documentation folder
+- Image folder for screenshots
+
+Main paths included in the repository:
+
+- `ai_sales_dashboard/api.py`
+- `ai_sales_dashboard/hooks.py`
+- `ai_sales_dashboard/ai_providers.py`
+- `ai_sales_dashboard/ai_sales_dashboard/doctype/`
+- `ai_sales_dashboard/ai_sales_dashboard/page/`
+- `ai_sales_dashboard/ai_sales_dashboard/report/`
+- `ai_sales_dashboard/ai_sales_dashboard/dashboard_chart/`
+- `ai_sales_dashboard/ai_sales_dashboard/number_card/`
+- `ai_sales_dashboard/public/js/`
+- `docs/`
+- `docs/images/`
+
 ## What Is Included
 
 - AI Executive Summary dashboard with KPI, trends, risks, and AI narrative
@@ -280,7 +310,9 @@ Then use markdown:
 
 ```text
 docs/
+	.gitkeep
 	images/
+		.gitkeep
 		dashboard.png
 		executive-summary.png
 		chatbot.png
