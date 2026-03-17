@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "creation": "2026-03-16 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "analysis_period_days",
+  "default_currency",
+  "enable_snapshot_scheduler",
+  "default_pipeline_stale_days",
+  "allow_sales_user_api_access"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "default": "90",
+   "fieldname": "analysis_period_days",
+   "fieldtype": "Int",
+   "label": "Analysis Period (Days)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_currency",
+   "fieldtype": "Link",
+   "label": "Default Currency",
+   "options": "Currency"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_snapshot_scheduler",
+   "fieldtype": "Check",
+   "label": "Enable Snapshot Scheduler"
+  },
+  {
+   "default": "14",
+   "fieldname": "default_pipeline_stale_days",
+   "fieldtype": "Int",
+   "label": "Default Pipeline Stale Days"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_sales_user_api_access",
+   "fieldtype": "Check",
+   "label": "Allow Sales User API Access"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-03-16 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AI Sales Dashboard",
+ "name": "AI Sales Dashboard Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "AI Sales Manager",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

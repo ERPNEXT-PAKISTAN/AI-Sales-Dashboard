@@ -1,0 +1,136 @@
+{
+ "actions": [],
+ "creation": "2026-03-17 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "provider",
+  "provider_documentation_url",
+  "model",
+  "base_url",
+  "api_key",
+  "provider_profiles_section",
+  "saved_providers",
+  "timeout_seconds",
+  "max_output_tokens",
+  "temperature",
+  "system_prompt",
+  "allow_ai_sales_user"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enable AI Insights"
+  },
+  {
+   "default": "Ollama",
+    "description": "Choose Statistical Engine for fully offline Python OLS + rule-based insights, or use a real API/local model provider.",
+   "fieldname": "provider",
+   "fieldtype": "Select",
+   "label": "Provider",
+    "options": "Statistical Engine\nOllama\nOpenAI\nGitHub Models\nClaude\nOpenRouter\nKimi\nDeepSeek\nGroq\nCerebras\nMistral\nTogether AI\nFireworks AI\nGemini\nHugging Face\nOpenAI Compatible",
+   "reqd": 1
+  },
+  {
+   "fieldname": "provider_documentation_url",
+   "fieldtype": "Data",
+   "label": "Provider Documentation / API URL",
+   "description": "Link to get API keys and documentation for the selected provider",
+   "read_only": 1
+  },
+  {
+   "default": "llama3.1:8b",
+    "description": "Examples: statistical-ols-v1, llama3.1:8b, deepseek-r1:latest, gpt-4.1-mini, openai/gpt-4.1-mini, claude-3-5-sonnet-20241022.",
+   "fieldname": "model",
+   "fieldtype": "Data",
+   "label": "Model",
+   "reqd": 1
+  },
+  {
+   "default": "http://127.0.0.1:11434",
+    "description": "Examples: Statistical Engine=internal://statistical, Ollama=http://127.0.0.1:11434, OpenAI=https://api.openai.com/v1, GitHub Models=https://models.inference.ai.azure.com.",
+   "fieldname": "base_url",
+   "fieldtype": "Data",
+   "label": "Base URL",
+   "reqd": 1
+  },
+  {
+    "description": "Required for hosted providers. Not used for local Ollama unless your gateway requires auth.",
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API Key"
+  },
+  {
+   "fieldname": "provider_profiles_section",
+   "fieldtype": "Section Break",
+   "label": "Saved Provider Profiles"
+  },
+  {
+   "description": "Save multiple provider configurations here and load them into the active settings without overwriting each other.",
+   "fieldname": "saved_providers",
+   "fieldtype": "Table",
+   "label": "Saved Providers",
+   "options": "AI Saved Provider"
+  },
+  {
+   "default": "45",
+   "fieldname": "timeout_seconds",
+   "fieldtype": "Int",
+   "label": "Timeout (Seconds)"
+  },
+  {
+   "default": "400",
+   "fieldname": "max_output_tokens",
+   "fieldtype": "Int",
+   "label": "Max Output Tokens"
+  },
+  {
+   "default": "0.2",
+   "fieldname": "temperature",
+   "fieldtype": "Float",
+   "label": "Temperature"
+  },
+  {
+   "fieldname": "system_prompt",
+   "fieldtype": "Small Text",
+   "label": "System Prompt"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_ai_sales_user",
+   "fieldtype": "Check",
+   "label": "Allow AI Sales User to Generate Insights"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-03-17 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AI Sales Dashboard",
+ "name": "AI Sales AI Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "AI Sales Manager",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

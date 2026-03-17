@@ -1,0 +1,298 @@
+from __future__ import annotations
+
+from copy import deepcopy
+
+
+PROVIDER_DOCUMENTATION_URLS = {
+	"OpenAI": "https://platform.openai.com/api-keys",
+	"Claude": "https://console.anthropic.com/account/keys",
+	"Gemini": "https://aistudio.google.com/app/apikey",
+	"Groq": "https://console.groq.com/keys",
+	"Cerebras": "https://cloud.cerebras.ai/platform/api-keys",
+	"DeepSeek": "https://platform.deepseek.com/api_keys",
+	"GitHub Models": "https://github.com/marketplace/models",
+	"OpenRouter": "https://openrouter.ai/keys",
+	"Kimi": "https://platform.moonshot.cn/api-keys",
+	"Mistral": "https://console.mistral.ai/api-keys/",
+	"Together AI": "https://api.together.xyz/settings/api-keys",
+	"Fireworks AI": "https://fireworks.ai/account/api-keys",
+	"Hugging Face": "https://huggingface.co/settings/tokens",
+	"Ollama": "https://ollama.ai/",
+	"Statistical Engine": "https://frappe.io/",
+	"OpenAI Compatible": "https://github.com/BerriAI/litellm/blob/main/docs/providers.md",
+}
+
+
+AI_PROVIDER_PRESETS = {
+	"Statistical Engine": {
+		"transport": "statistical",
+		"base_url": "internal://statistical",
+		"model": "statistical-ols-v1",
+		"timeout_seconds": 5,
+		"max_output_tokens": 220,
+		"requires_api_key": False,
+		"credential_hint": "No API key required. Runs fully offline.",
+		"free_tier": "Fully offline local engine",
+	},
+	"Ollama": {
+		"transport": "ollama",
+		"base_url": "http://127.0.0.1:11434",
+		"model": "llama3.1:8b",
+		"timeout_seconds": 180,
+		"max_output_tokens": 350,
+		"requires_api_key": False,
+		"credential_hint": "No API key required for local Ollama unless a gateway enforces auth.",
+		"free_tier": "Local open-weight models",
+	},
+	"OpenAI": {
+		"transport": "openai_compatible",
+		"base_url": "https://api.openai.com/v1",
+		"model": "gpt-4.1-mini",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your OpenAI API key.",
+		"free_tier": "No always-free tier",
+	},
+	"GitHub Models": {
+		"transport": "openai_compatible",
+		"base_url": "https://models.inference.ai.azure.com",
+		"model": "openai/gpt-4.1-mini",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Use a GitHub token with Models inference access.",
+		"free_tier": "Limited free access by account",
+	},
+	"Claude": {
+		"transport": "anthropic",
+		"base_url": "https://api.anthropic.com/v1",
+		"model": "claude-3-5-sonnet-20241022",
+		"timeout_seconds": 90,
+		"max_output_tokens": 700,
+		"requires_api_key": True,
+		"credential_hint": "Paste your Anthropic API key.",
+		"free_tier": "Usually trial/credits only",
+	},
+	"OpenRouter": {
+		"transport": "openai_compatible",
+		"base_url": "https://openrouter.ai/api/v1",
+		"model": "anthropic/claude-3.5-sonnet",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your OpenRouter API key. You can select free models in your account.",
+		"free_tier": "Includes some free model routes",
+	},
+	"Kimi": {
+		"transport": "openai_compatible",
+		"base_url": "https://api.moonshot.ai/v1",
+		"model": "moonshot-v1-8k",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your Moonshot/Kimi API key.",
+		"free_tier": "Trial credits vary by account",
+	},
+	"DeepSeek": {
+		"transport": "openai_compatible",
+		"base_url": "https://api.deepseek.com/v1",
+		"model": "deepseek-chat",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your DeepSeek API key.",
+		"free_tier": "Trial credits vary by account",
+	},
+	"Groq": {
+		"transport": "openai_compatible",
+		"base_url": "https://api.groq.com/openai/v1",
+		"model": "llama-3.3-70b-versatile",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your Groq API key.",
+		"free_tier": "Free tier available",
+	},
+	"Cerebras": {
+		"transport": "openai_compatible",
+		"base_url": "https://api.cerebras.ai/v1",
+		"model": "llama-3.3-70b",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your Cerebras API key.",
+		"free_tier": "Credits vary by account",
+	},
+	"Mistral": {
+		"transport": "openai_compatible",
+		"base_url": "https://api.mistral.ai/v1",
+		"model": "mistral-small-latest",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your Mistral API key.",
+		"free_tier": "Trial credits available",
+	},
+	"Together AI": {
+		"transport": "openai_compatible",
+		"base_url": "https://api.together.xyz/v1",
+		"model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your Together AI API key.",
+		"free_tier": "Free credits available",
+	},
+	"Fireworks AI": {
+		"transport": "openai_compatible",
+		"base_url": "https://api.fireworks.ai/inference/v1",
+		"model": "accounts/fireworks/models/llama-v3p3-70b-instruct",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your Fireworks API key.",
+		"free_tier": "Free credits available",
+	},
+	"Gemini": {
+		"transport": "gemini",
+		"base_url": "https://generativelanguage.googleapis.com/v1beta",
+		"model": "gemini-2.0-flash",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your Google AI Studio (Gemini) API key.",
+		"free_tier": "Generous free tier available",
+	},
+	"Hugging Face": {
+		"transport": "huggingface",
+		"base_url": "https://api-inference.huggingface.co",
+		"model": "meta-llama/Llama-3.1-8B-Instruct",
+		"timeout_seconds": 120,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Paste your Hugging Face User Access Token.",
+		"free_tier": "Free tier available with limits",
+	},
+	"OpenAI Compatible": {
+		"transport": "openai_compatible",
+		"base_url": "",
+		"model": "",
+		"timeout_seconds": 90,
+		"max_output_tokens": 500,
+		"requires_api_key": True,
+		"credential_hint": "Set Base URL, Model, and API key for your compatible provider.",
+		"free_tier": "Depends on provider",
+	},
+}
+
+
+AI_MODEL_PROFILES = [
+	{
+		"key": "statistical_quick",
+		"label": "Statistical Engine Offline",
+		"provider": "Statistical Engine",
+		"base_url": "internal://statistical",
+		"model": "statistical-ols-v1",
+		"timeout_seconds": 5,
+		"max_output_tokens": 220,
+		"temperature": 0.0,
+		"notes": "Pure Python OLS + rule-based insights. No external API and lowest latency.",
+	},
+	{
+		"key": "ollama_fast",
+		"label": "Ollama Fast Local",
+		"provider": "Ollama",
+		"base_url": "http://127.0.0.1:11434",
+		"model": "deepseek-r1:latest",
+		"timeout_seconds": 120,
+		"max_output_tokens": 280,
+		"temperature": 0.1,
+		"notes": "Best low-timeout profile currently available on this server.",
+	},
+	{
+		"key": "ollama_balanced",
+		"label": "Ollama Balanced",
+		"provider": "Ollama",
+		"base_url": "http://127.0.0.1:11434",
+		"model": "llama3.1:8b",
+		"timeout_seconds": 180,
+		"max_output_tokens": 350,
+		"temperature": 0.2,
+		"notes": "Current local default. Better quality but higher latency.",
+	},
+	{
+		"key": "github_models_fast",
+		"label": "GitHub Models Fast",
+		"provider": "GitHub Models",
+		"base_url": "https://models.inference.ai.azure.com",
+		"model": "openai/gpt-4.1-mini",
+		"timeout_seconds": 60,
+		"max_output_tokens": 400,
+		"temperature": 0.2,
+		"notes": "Requires GitHub Models access and a valid GitHub token with model inference access.",
+	},
+	{
+		"key": "openai_fast",
+		"label": "OpenAI Fast",
+		"provider": "OpenAI",
+		"base_url": "https://api.openai.com/v1",
+		"model": "gpt-4.1-mini",
+		"timeout_seconds": 60,
+		"max_output_tokens": 500,
+		"temperature": 0.2,
+		"notes": "Fast hosted profile for executive summaries.",
+	},
+	{
+		"key": "claude_quality",
+		"label": "Claude Quality",
+		"provider": "Claude",
+		"base_url": "https://api.anthropic.com/v1",
+		"model": "claude-3-5-sonnet-20241022",
+		"timeout_seconds": 90,
+		"max_output_tokens": 700,
+		"temperature": 0.2,
+		"notes": "High-quality executive writing with native Anthropic API.",
+	},
+]
+
+
+def get_provider_preset(provider: str | None) -> dict:
+	provider_name = (provider or "Ollama").strip()
+	preset = AI_PROVIDER_PRESETS.get(provider_name) or AI_PROVIDER_PRESETS["OpenAI Compatible"]
+	return deepcopy(preset)
+
+
+def get_provider_catalog() -> dict:
+	providers = []
+	for label, preset in AI_PROVIDER_PRESETS.items():
+		providers.append(
+			{
+				"label": label,
+				"transport": preset["transport"],
+				"base_url": preset["base_url"],
+				"model": preset["model"],
+				"documentation_url": PROVIDER_DOCUMENTATION_URLS.get(label) or "",
+				"timeout_seconds": preset["timeout_seconds"],
+				"max_output_tokens": preset["max_output_tokens"],
+				"requires_api_key": bool(preset.get("requires_api_key", True)),
+				"credential_hint": preset.get("credential_hint") or "",
+				"free_tier": preset.get("free_tier") or "",
+			}
+		)
+
+	return {
+		"providers": providers,
+		"profiles": deepcopy(AI_MODEL_PROFILES),
+		"notes": {
+			"engine_summary": [
+				"Statistical Engine is fully offline and uses OLS trend forecasting plus deterministic sales rules.",
+				"Use it when API providers are slow, unavailable, or not allowed for compliance reasons.",
+			],
+			"subscription_limits": [
+				"GitHub Copilot subscriptions do not expose a reusable backend inference API key for this app.",
+				"Aider and OpenCode are clients/tools, not model hosting providers. Point them at Ollama or a real API provider instead.",
+				"Codex/chat subscriptions are not automatically reusable as API credentials. Use an actual API key from the provider.",
+			],
+		},
+	}

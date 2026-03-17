@@ -1,0 +1,21 @@
+{
+ "creation": "2026-03-17 00:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Delivery Note",
+ "dynamic_filters_json": "[[\"Delivery Note\",\"company\",\"=\",\"frappe.defaults.get_user_default(\\\"Company\\\")\"]]",
+ "filters_json": "[[\"Delivery Note\",\"docstatus\",\"=\",1,false],[\"Delivery Note\",\"posting_date\",\"Timespan\",\"this month\",false]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "AI Deliveries (MTD)",
+ "modified": "2026-03-17 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AI Sales Dashboard",
+ "name": "AI Deliveries (MTD)",
+ "owner": "Administrator",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Monthly",
+ "type": "Document Type"
+}

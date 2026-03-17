@@ -1,0 +1,163 @@
+{
+ "actions": [],
+ "creation": "2026-03-16 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "snapshot_date",
+  "company",
+  "period_type",
+    "opportunities_created",
+    "opportunities_converted",
+    "conversion_rate_percent",
+  "open_opportunities",
+  "pipeline_value",
+  "weighted_pipeline_value",
+  "win_rate_percent",
+  "booked_revenue",
+    "sales_orders_count",
+    "deliveries_count",
+    "invoices_count",
+    "avg_invoice_value",
+  "currency",
+  "data_source_note"
+ ],
+ "fields": [
+  {
+   "fieldname": "snapshot_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Snapshot Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "default": "Daily",
+   "fieldname": "period_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Period Type",
+    "options": "Daily\nWeekly\nMonthly\nQuarterly\nYearly",
+   "reqd": 1
+  },
+  {
+    "default": "0",
+    "fieldname": "opportunities_created",
+    "fieldtype": "Int",
+    "label": "Opportunities Created"
+  },
+  {
+    "default": "0",
+    "fieldname": "opportunities_converted",
+    "fieldtype": "Int",
+    "label": "Opportunities Converted"
+  },
+  {
+    "fieldname": "conversion_rate_percent",
+    "fieldtype": "Percent",
+    "label": "Conversion Rate Percent"
+  },
+  {
+   "default": "0",
+   "fieldname": "open_opportunities",
+   "fieldtype": "Int",
+   "label": "Open Opportunities"
+  },
+  {
+   "fieldname": "pipeline_value",
+   "fieldtype": "Currency",
+   "label": "Pipeline Value",
+   "options": "currency"
+  },
+  {
+   "fieldname": "weighted_pipeline_value",
+   "fieldtype": "Currency",
+   "label": "Weighted Pipeline Value",
+   "options": "currency"
+  },
+  {
+   "fieldname": "win_rate_percent",
+   "fieldtype": "Percent",
+   "label": "Win Rate Percent"
+  },
+  {
+   "fieldname": "booked_revenue",
+   "fieldtype": "Currency",
+   "label": "Booked Revenue",
+   "options": "currency"
+  },
+    {
+     "default": "0",
+     "fieldname": "sales_orders_count",
+     "fieldtype": "Int",
+     "label": "Sales Orders Count"
+    },
+    {
+     "default": "0",
+     "fieldname": "deliveries_count",
+     "fieldtype": "Int",
+     "label": "Deliveries Count"
+    },
+    {
+     "default": "0",
+     "fieldname": "invoices_count",
+     "fieldtype": "Int",
+     "label": "Invoices Count"
+    },
+    {
+     "fieldname": "avg_invoice_value",
+     "fieldtype": "Currency",
+     "label": "Avg Invoice Value",
+     "options": "currency"
+    },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "data_source_note",
+   "fieldtype": "Small Text",
+   "label": "Data Source Note",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-16 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AI Sales Dashboard",
+ "name": "Sales KPI Snapshot",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "AI Sales Manager"
+  },
+  {
+   "read": 1,
+   "role": "AI Sales User"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
