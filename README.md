@@ -32,36 +32,7 @@ This repository contains the complete app code (DocTypes, Pages, Reports, APIs, 
 - External providers: Groq, OpenRouter, Gemini, Together AI, etc.
 - Local provider: Ollama (for offline/local inference)
 
-## 1. Upload App to GitHub (Complete App)
-
-Run these commands on your development server in `apps/ai_sales_dashboard`.
-
-```bash
-cd /home/frappe/frappe-bench/apps/ai_sales_dashboard
-
-# initialize git if needed
-git init
-git add .
-git commit -m "Initial production release: AI Sales Dashboard"
-
-# set main branch
-git branch -M main
-
-# add your GitHub repo
-git remote add origin https://github.com/<your-org>/ai_sales_dashboard.git
-
-# push complete app
-git push -u origin main
-```
-
-If remote already exists:
-
-```bash
-git remote -v
-git push -u origin main
-```
-
-## 2. Install on New Client Server (Fresh App Install)
+## 1. Install on New Server
 
 Assumption: Bench + Frappe + ERPNext are already installed on client server.
 
@@ -69,13 +40,13 @@ Assumption: Bench + Frappe + ERPNext are already installed on client server.
 cd /home/frappe/frappe-bench
 
 # download app from GitHub
-bench get-app https://github.com/<your-org>/ai_sales_dashboard.git --branch main
+bench get-app https://github.com/ERPNEXT-PAKISTAN/AI-Sales-Dashboard.git --branch main
 
 # install app on target site
-bench --site <client-site> install-app ai_sales_dashboard
+bench --site site1.local install-app ai_sales_dashboard
 
 # apply schema/doctype updates
-bench --site <client-site> migrate
+bench --site site1.local migrate
 
 # build assets
 bench build --app ai_sales_dashboard
@@ -84,7 +55,7 @@ bench build --app ai_sales_dashboard
 bench restart
 ```
 
-## 3. Update on Already Installed Server
+## 2. Update on Already Installed Server
 
 Use this on servers where `ai_sales_dashboard` is already installed.
 
@@ -92,11 +63,11 @@ Use this on servers where `ai_sales_dashboard` is already installed.
 cd /home/frappe/frappe-bench
 
 # pull latest app code
-bench --site <client-site> backup --with-files
+bench --site site1.local backup --with-files
 bench update --apps ai_sales_dashboard --reset
 
 # ensure schema and assets are updated
-bench --site <client-site> migrate
+bench --site site1.local migrate
 bench build --app ai_sales_dashboard
 bench restart
 ```
@@ -108,22 +79,22 @@ cd /home/frappe/frappe-bench/apps/ai_sales_dashboard
 git pull origin main
 
 cd /home/frappe/frappe-bench
-bench --site <client-site> migrate
+bench --site site1.local migrate
 bench build --app ai_sales_dashboard
 bench restart
 ```
 
-## 4. Download Commands (For Client/Dev)
+## 3. Download Commands
 
 ```bash
 # clone only repository
-git clone https://github.com/<your-org>/ai_sales_dashboard.git
+git clone https://github.com/ERPNEXT-PAKISTAN/AI-Sales-Dashboard.git
 
 # bench-aware download into apps/
-bench get-app https://github.com/<your-org>/ai_sales_dashboard.git --branch main
+bench get-app https://github.com/ERPNEXT-PAKISTAN/AI-Sales-Dashboard.git --branch main
 ```
 
-## 5. Post-Install Configuration
+## 4. Post-Install Configuration
 
 1. Open desk: `/app/ai-sales-ai-settings`
 2. Enable AI Insights
@@ -132,16 +103,16 @@ bench get-app https://github.com/<your-org>/ai_sales_dashboard.git --branch main
 5. Click `Test Connection`
 6. (Recommended) Save provider profiles and run `Test Saved Providers`
 
-## 6. Verification Checklist
+## 5. Verification Checklist
 
 After install/update, verify:
 
 ```bash
 cd /home/frappe/frappe-bench
 
-bench --site <client-site> list-apps | grep ai_sales_dashboard
-bench --site <client-site> execute ai_sales_dashboard.api.get_ai_engine_status
-bench --site <client-site> execute ai_sales_dashboard.api.get_saved_ai_provider_profiles
+bench --site site1.local list-apps | grep ai_sales_dashboard
+bench --site site1.local execute ai_sales_dashboard.api.get_ai_engine_status
+bench --site site1.local execute ai_sales_dashboard.api.get_saved_ai_provider_profiles
 ```
 
 UI checks:
@@ -151,13 +122,13 @@ UI checks:
 - `/app/ai-sales-agent`
 - `/app/ai-chatbot`
 
-## 7. Optional: One-Step Deployment Script
+## 6. Optional One-Step Deployment Script
 
 ```bash
 cd /home/frappe/frappe-bench
 
-SITE=<client-site>
-REPO=https://github.com/<your-org>/ai_sales_dashboard.git
+SITE=site1.local
+REPO=https://github.com/ERPNEXT-PAKISTAN/AI-Sales-Dashboard.git
 BRANCH=main
 
 bench get-app "$REPO" --branch "$BRANCH" || true
@@ -167,7 +138,155 @@ bench build --app ai_sales_dashboard
 bench restart
 ```
 
-## 8. Troubleshooting
+## 7. Ollama / Local AI Setup
+
+Use Ollama when you want local AI on your laptop, desktop, or VPS without sending data to cloud providers.
+
+### Install Ollama on Ubuntu / VPS
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+ollama serve
+```
+
+If you want Ollama to run in background as a service, install it normally and start the system service.
+
+### Pull Models Used in This App
+
+Light models for low-spec servers:
+
+```bash
+ollama pull qwen2.5:1.5b
+ollama pull phi3:mini
+ollama pull llama3.2:3b
+```
+
+Larger models if server is stronger:
+
+```bash
+ollama pull deepseek-r1:latest
+ollama pull llama3.1:8b
+```
+
+### Recommended for Low VPS / Low RAM
+
+- `qwen2.5:1.5b`
+- `phi3:mini`
+- `llama3.2:3b`
+
+### Configure App to Use Ollama
+
+Open `/app/ai-sales-ai-settings` and set:
+
+- Provider: `Ollama`
+- Base URL: `http://127.0.0.1:11434`
+- Model: `qwen2.5:1.5b` or `phi3:mini`
+
+Then click `Test Connection`.
+
+### Example Server-Side Setup Command
+
+```bash
+cd /home/frappe/frappe-bench
+bench --site site1.local execute frappe.client.set_value --kwargs '{"doctype":"AI Sales AI Settings","name":"AI Sales AI Settings","fieldname":{"provider":"Ollama","base_url":"http://127.0.0.1:11434","model":"qwen2.5:1.5b","enabled":1}}'
+```
+
+## 8. Free AI API Signup Links
+
+### 🔥 Groq
+
+- Signup: [https://console.groq.com/login](https://console.groq.com/login)
+- Dashboard / API Keys: [https://console.groq.com/keys](https://console.groq.com/keys)
+- Steps:
+	1. Signup
+	2. Open dashboard
+	3. Generate API key
+- Notes:
+	- ✅ Ultra fast
+	- ✅ Free tier available
+	- ✅ Best for chatbot and analytics
+
+### 🔀 OpenRouter
+
+- Signup: [https://openrouter.ai/signup](https://openrouter.ai/signup)
+- Tokens: [https://openrouter.ai/settings/keys](https://openrouter.ai/settings/keys)
+- Steps:
+	1. Signup
+	2. Go to Settings -> Tokens
+	3. Create token
+- Notes:
+	- ✅ Thousands of models
+	- ✅ Free usage available on selected models
+
+### ✨ Gemini
+
+- Signup / API Key: [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+- Dashboard: [https://aistudio.google.com/](https://aistudio.google.com/)
+- Steps:
+	1. Login with Google account
+	2. Open AI Studio
+	3. Generate API key
+- Notes:
+	- ✅ Free tier available
+	- ✅ Good for fast cloud inference
+
+### 🚀 Together AI
+
+- Signup: [https://api.together.xyz/](https://api.together.xyz/)
+- API Keys: [https://api.together.xyz/settings/api-keys](https://api.together.xyz/settings/api-keys)
+- Steps:
+	1. Signup
+	2. Open API Keys page
+	3. Generate key
+- Notes:
+	- ✅ Large model catalog
+	- ✅ Credits may be available
+
+### 🧠 Cerebras
+
+- Signup: [https://cloud.cerebras.ai/](https://cloud.cerebras.ai/)
+- API Keys: [https://cloud.cerebras.ai/platform/api-keys](https://cloud.cerebras.ai/platform/api-keys)
+- Steps:
+	1. Signup
+	2. Open platform dashboard
+	3. Generate API key
+- Notes:
+	- ✅ Very fast inference when configured correctly
+	- ⚠ Verify endpoint and account access before production use
+
+## 9. How to Add Pictures in README
+
+### Add image stored inside repository
+
+Put image in repository, for example:
+
+```text
+docs/images/dashboard.png
+```
+
+Then use markdown:
+
+```md
+![AI Sales Dashboard](docs/images/dashboard.png)
+```
+
+### Add image with full GitHub URL
+
+```md
+![AI Sales Dashboard](https://raw.githubusercontent.com/ERPNEXT-PAKISTAN/AI-Sales-Dashboard/main/docs/images/dashboard.png)
+```
+
+### Recommended folder structure
+
+```text
+docs/
+	images/
+		dashboard.png
+		executive-summary.png
+		chatbot.png
+```
+
+## 10. Troubleshooting
 
 - `Could not reach the AI provider`: check API key, base URL, model, provider quota
 - `429`: provider rate limit/quota exceeded
